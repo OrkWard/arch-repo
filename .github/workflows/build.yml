@@ -61,6 +61,41 @@ jobs:
           cd x86_64
           repo-add orkward.db.tar.gz *.pkg.tar.zst
 
+      - name: Generate index.html
+        run: |
+          cd x86_64
+          cat > index.html << 'HTMLEOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <meta charset="UTF-8">
+              <title>OrkWard's Arch Repo</title>
+          </head>
+          <body>
+              <h1>OrkWard's Arch Repository</h1>
+              <h2>pacman.conf</h2>
+              <pre>
+          [orkward]
+          SigLevel = Optional TrustAll
+          Server = https://orkward.github.io/arch-repo/$arch
+              </pre>
+              <h2>Packages</h2>
+              <table border="1">
+                  <tr><th>Package</th><th>Version</th></tr>
+          HTMLEOF
+          
+          for pkg in *.pkg.tar.zst; do
+              name=$(echo "$pkg" | sed -E 's/-[0-9].*//')
+              version=$(echo "$pkg" | sed -E 's/.*-([0-9][^-]*-[^-]+)-x86_64.*/\1/')
+              echo "          <tr><td>$name</td><td>$version</td></tr>" >> index.html
+          done
+          
+          cat >> index.html << 'HTMLEOF'
+              </table>
+          </body>
+          </html>
+          HTMLEOF
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
