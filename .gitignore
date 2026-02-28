@@ -1,0 +1,12 @@
+# Ignore all package files except what we explicitly add
+# *.pkg.tar.zst
+# *.pkg.tar.zst.sig
+
+# Ignore old database files
+*.db.tar.gz.old
+*.files.tar.gz.old
+
+# Ignore build artifacts
+src/
+pkg/
+*.log
