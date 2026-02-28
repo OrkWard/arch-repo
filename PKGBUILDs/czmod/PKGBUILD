@@ -1,0 +1,26 @@
+# Maintainer: OrkWard
+pkgname=czmod
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Native module written in C to boost z.lua"
+arch=('x86_64')
+url="https://github.com/OrkWard/czmod"
+license=('MIT')
+depends=('glibc')
+makedepends=('gcc')
+source=("git+https://github.com/OrkWard/czmod.git")
+sha256sums=('SKIP')
+
+build() {
+  cd "$srcdir/$pkgname"
+  gcc -O3 -o czmod czmod.c system/imembase.c system/iposix.c
+}
+
+package() {
+  cd "$srcdir/$pkgname"
+  install -Dm755 czmod "$pkgdir/usr/bin/czmod"
+  install -Dm644 czmod.bash "$pkgdir/usr/share/czmod/czmod.bash"
+  install -Dm644 czmod.zsh "$pkgdir/usr/share/czmod/czmod.zsh"
+  install -Dm644 czmod.fish "$pkgdir/usr/share/czmod/czmod.fish"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

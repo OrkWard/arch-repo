@@ -41,15 +41,22 @@ jobs:
           
           su builder -c '
             cd "$HOME"
-            git clone --depth 1 https://aur.archlinux.org/berry.git
-            git clone --depth 1 https://aur.archlinux.org/alttab.git
-            git clone --depth 1 https://github.com/OrkWard/czmod.git
             
-            for pkg in berry alttab czmod; do
-              cd "$HOME/$pkg"
-              makepkg -s --noconfirm
-              cp *.pkg.tar.zst "$GITHUB_WORKSPACE/x86_64/"
-            done
+            # Build berry from AUR
+            git clone --depth 1 https://aur.archlinux.org/berry.git
+            cd berry && makepkg -s --noconfirm && cp *.pkg.tar.zst "$GITHUB_WORKSPACE/x86_64/"
+            cd "$HOME"
+            
+            # Build alttab from AUR
+            git clone --depth 1 https://aur.archlinux.org/alttab.git
+            cd alttab && makepkg -s --noconfirm && cp *.pkg.tar.zst "$GITHUB_WORKSPACE/x86_64/"
+            cd "$HOME"
+            
+            # Build czmod from local PKGBUILD
+            mkdir czmod && cd czmod
+            cp "$GITHUB_WORKSPACE/PKGBUILDs/czmod/PKGBUILD" .
+            makepkg -s --noconfirm
+            cp *.pkg.tar.zst "$GITHUB_WORKSPACE/x86_64/"
           '
 
       - name: Update database
